@@ -2,6 +2,10 @@
 
 # RandomWalkRestartMH: An R package to perform Random Walk with Restart
 
+## Forked and Modified for RWRtools
+
+This version of **RandomWalkRestartMH** has been edited to fix some bugs and 
+add Seed weighting functionality
 
 ## Overview 
 
