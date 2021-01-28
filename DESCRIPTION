@@ -9,14 +9,15 @@ Authors@R: c(
            role = c("cre","aut","ctb"),
            email = "alvaldeolivas@gmail.com",
            comment = c(ORCID = "0000-0001-5482-9023")))
-Description: This package performs Random Walk with Restart on multiplex and
+Description: Dev version by dkainer. 
+    This package performs Random Walk with Restart on multiplex and
     heterogeneous networks. It is described in the following article:
     "Random Walk With Restart On Multiplex And Heterogeneous Biological 
     Networks" 
     <https://academic.oup.com/bioinformatics/article/35/3/497/5055408>.
 License: GPL (>= 2)
-URL: https://github.com/alberto-valdeolivas/RandomWalkRestartMH
-BugReports: https://github.com/alberto-valdeolivas/RandomWalkRestartMH/issues
+URL: https://github.com/dkainer/RandomWalkRestartMH
+BugReports: https://github.com/dkainer/RandomWalkRestartMH/issues
 Encoding: UTF-8
 LazyData: true
 Depends: R(>= 3.5.0)
