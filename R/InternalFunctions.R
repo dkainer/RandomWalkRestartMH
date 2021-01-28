@@ -61,18 +61,39 @@ add.missing.nodes <- function (Layers,Nr_Layers,NodeNames) {
 
 ## Scores for the seeds of the multiplex network.
 get.seed.scoresMultiplex <- function(Seeds,Number_Layers,tau) {
+    # 
+    # Nr_Seeds <- length(Seeds)
+    # 
+    # Seeds_Seeds_Scores <- rep(tau/Nr_Seeds,Nr_Seeds)
+    # Seed_Seeds_Layer_Labeled <- 
+    #     paste0(rep(Seeds,Number_Layers),sep="_",rep(seq(Number_Layers), 
+    #         length.out = Nr_Seeds*Number_Layers,each=Nr_Seeds))
+    # 
+    # Seeds_Score <- data.frame(Seeds_ID = Seed_Seeds_Layer_Labeled,
+    #     Score = Seeds_Seeds_Scores, stringsAsFactors = FALSE)
+    # 
+    # return(Seeds_Score)
     
     Nr_Seeds <- length(Seeds)
     
-    Seeds_Seeds_Scores <- rep(tau/Nr_Seeds,Nr_Seeds)
-    Seed_Seeds_Layer_Labeled <- 
-        paste0(rep(Seeds,Number_Layers),sep="_",rep(seq(Number_Layers), 
-            length.out = Nr_Seeds*Number_Layers,each=Nr_Seeds))
+    scores <- rep(tau/Number_Layers,each=Nr_Seeds)
+    labels <- paste0(rep(Seeds,Number_Layers),sep="_",rep(seq(Number_Layers), 
+                                                          length.out = Nr_Seeds*Number_Layers,each=Nr_Seeds))
+    scoresdf <- data.frame(Seeds_ID = labels,
+                           Score = scores, stringsAsFactors = FALSE)
+    return(scoresdf)
+}
+
+get.seed.scoresMultiplex.weighted <- function(Seeds,Number_Layers,tau,seedweights=1) {
     
-    Seeds_Score <- data.frame(Seeds_ID = Seed_Seeds_Layer_Labeled,
-        Score = Seeds_Seeds_Scores, stringsAsFactors = FALSE)
+    Nr_Seeds <- length(Seeds)
     
-    return(Seeds_Score)
+    scores <- rep(tau/Number_Layers,each=Nr_Seeds) * seedweights
+    labels <- paste0(rep(Seeds,Number_Layers),sep="_",rep(seq(Number_Layers), 
+                         length.out = Nr_Seeds*Number_Layers,each=Nr_Seeds))
+    scoresdf <- data.frame(Seeds_ID = labels,
+                              Score = scores, stringsAsFactors = FALSE)
+    return(scoresdf)
 }
 
 ## Bipartite graph construction.
