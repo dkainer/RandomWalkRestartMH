@@ -199,8 +199,13 @@ normalize.multiplex.adjacency <- function(x)
 #' restarting to a seed node after each step. See more details below.
 #' @param tau A vector containing the probability of restart on the seeds
 #' of the different layers (layers weights). It must have the same length than
-#' the number of layers of the multpiplex network. The sum of its components
+#' the number of layers of the multiplex network. The sum of its components
 #' divided by the number of layers must be 1. See more details below.
+#' @param weights An optional numeric vector containing  weights for all seeds.
+#' It must have the same length as the \code{Seeds} vector.
+#' These should all be positive values > 0. If not set then all seeds are 
+#' treated equally by the RWR. If weights are set then the walker is biased to 
+#' nodes with higher weight. See more details below.
 #' @param MeanType The user can choose one of the following options: 
 #' c("Geometric","Arithmetic","Sum"). These options represent the different way
 #' to combine the RWR score for the same node in different layers. By default 
@@ -359,7 +364,7 @@ Random.Walk.Restart.Multiplex.default <- function(x, MultiplexObject, Seeds,
     return(RWRM_ranking)
 }
 
-#'@rdname Random.Walk.Restart.Multiplex.Weighted
+#'@rdname Random.Walk.Restart.Multiplex
 #'@export
 Random.Walk.Restart.Multiplex.Weighted <- function(x, MultiplexObject, Seeds, 
                                                   r=0.7,tau,weights=1,MeanType="Geometric", DispResults="TopScores",...){
@@ -418,8 +423,8 @@ Random.Walk.Restart.Multiplex.Weighted <- function(x, MultiplexObject, Seeds,
     residue <- 1
     iter <- 1
     
-    ## We compute the scores for the different seeds.
-    #Seeds_Score <- get.seed.scoresMultiplex(Seeds,L,tau)
+    ## We compute the scores for the different seeds
+    ## Seeds are given initial weightings to bias the walker.
     Seeds_Score <- get.seed.scoresMultiplex.weighted(Seeds,L,tau, weights)
     
     ## We define the prox_vector(The vector we will move after the first RWR
