@@ -3,23 +3,11 @@
 \name{Random.Walk.Restart.Multiplex}
 \alias{Random.Walk.Restart.Multiplex}
 \alias{Random.Walk.Restart.Multiplex.default}
-\alias{Random.Walk.Restart.Multiplex.Weighted}
 \title{Performs Random Walk with Restart on a Multiplex Network}
 \usage{
 Random.Walk.Restart.Multiplex(...)
 
 \method{Random.Walk.Restart.Multiplex}{default}(
-  x,
-  MultiplexObject,
-  Seeds,
-  r = 0.7,
-  tau,
-  MeanType = "Geometric",
-  DispResults = "TopScores",
-  ...
-)
-
-\method{Random.Walk.Restart.Multiplex}{Weighted}(
   x,
   MultiplexObject,
   Seeds,
@@ -51,6 +39,12 @@ of the different layers (layers weights). It must have the same length than
 the number of layers of the multiplex network. The sum of its components
 divided by the number of layers must be 1. See more details below.}
 
+\item{weights}{An optional numeric vector containing  weights for all seeds.
+It must have the same length as the \code{Seeds} vector.
+These should all be positive values > 0. If not set then all seeds are 
+treated equally by the RWR. If weights are set then the walker is biased to 
+nodes with higher weight. See more details below.}
+
 \item{MeanType}{The user can choose one of the following options: 
 c("Geometric","Arithmetic","Sum"). These options represent the different way
 to combine the RWR score for the same node in different layers. By default 
@@ -64,12 +58,6 @@ would be presented. By default, and recommended, the nodes would be ordered
 by score. This option is also required to properly run the 
 \code{create.multiplexNetwork.topResults} and 
 \code{create.multiplexHetNetwork.topResults} functions}
-
-\item{weights}{An optional numeric vector containing  weights for all seeds.
-It must have the same length as the \code{Seeds} vector.
-These should all be positive values > 0. If not set then all seeds are 
-treated equally by the RWR. If weights are set then the walker is biased to 
-nodes with higher weight. See more details below.}
 }
 \value{
 A \code{RWRM_Results} object. It contains a sorted ranking of all

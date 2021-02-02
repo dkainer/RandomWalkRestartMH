@@ -29,7 +29,8 @@ simplify.layers <- function(Input_Layer){
     ## Unweighted or Weigthed Graphs
     if (is_weighted(Layer)){
         b <- 1
-        weigths_layer <- E(Layer)$weight
+        ## DK note:: added abs here to avoid negative weights
+        weigths_layer <- abs(E(Layer)$weight)
         if (min(weigths_layer) != max(weigths_layer)){
             a <- min(weigths_layer)/max(weigths_layer)
             range01 <- (b-a)*(weigths_layer-min(weigths_layer))/
@@ -60,7 +61,7 @@ add.missing.nodes <- function (Layers,Nr_Layers,NodeNames) {
 }
 
 ## Scores for the seeds of the multiplex network.
-get.seed.scoresMultiplex <- function(Seeds,Number_Layers,tau) {
+get.seed.scoresMultiplex <- function(Seeds,Number_Layers,tau,seedweights=1) {
     # 
     # Nr_Seeds <- length(Seeds)
     # 
@@ -76,25 +77,16 @@ get.seed.scoresMultiplex <- function(Seeds,Number_Layers,tau) {
     
     Nr_Seeds <- length(Seeds)
     
-    scores <- rep(tau/Number_Layers,each=Nr_Seeds)
+    scores <- rep(tau/Number_Layers,each=Nr_Seeds) * seedweights
     labels <- paste0(rep(Seeds,Number_Layers),sep="_",rep(seq(Number_Layers), 
                                                           length.out = Nr_Seeds*Number_Layers,each=Nr_Seeds))
     scoresdf <- data.frame(Seeds_ID = labels,
                            Score = scores, stringsAsFactors = FALSE)
+    cat("starting scores vector: \n")
+    print(scoresdf)
     return(scoresdf)
 }
 
-get.seed.scoresMultiplex.weighted <- function(Seeds,Number_Layers,tau,seedweights=1) {
-    
-    Nr_Seeds <- length(Seeds)
-    
-    scores <- rep(tau/Number_Layers,each=Nr_Seeds) * seedweights
-    labels <- paste0(rep(Seeds,Number_Layers),sep="_",rep(seq(Number_Layers), 
-                         length.out = Nr_Seeds*Number_Layers,each=Nr_Seeds))
-    scoresdf <- data.frame(Seeds_ID = labels,
-                              Score = scores, stringsAsFactors = FALSE)
-    return(scoresdf)
-}
 
 ## Bipartite graph construction.
 get.bipartite.graph <- 
