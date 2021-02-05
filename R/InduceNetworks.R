@@ -61,8 +61,11 @@ create.multiplexNetwork.topResults <-
     }
         
     k <- as.numeric(k)
-    if (k  <= 0 || k >= 200) {
-        stop("K should be between 0 and 200")
+    # if (k  <= 0 || k >= 200) {
+    #     stop("K should be between 0 and 200")
+    # }
+    if (k  <= 0 ) {
+        stop("K should be 0 or greater")
     }
         
     L <- MultiplexObject$Number_of_Layers
