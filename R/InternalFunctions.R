@@ -82,8 +82,8 @@ get.seed.scoresMultiplex <- function(Seeds,Number_Layers,tau,seedweights=1) {
                                                           length.out = Nr_Seeds*Number_Layers,each=Nr_Seeds))
     scoresdf <- data.frame(Seeds_ID = labels,
                            Score = scores, stringsAsFactors = FALSE)
-    cat("starting scores vector: \n")
-    print(scoresdf)
+    #cat("starting scores vector: \n")
+    #print(scoresdf)
     return(scoresdf)
 }
 
