@@ -17,11 +17,12 @@ geometric.mean <- function(Scores, L, N) {
     return(FinalScore)
 }
 
+col.means.helper <- function(value){
+    return( if (typeof(value) == 'character') NA else mean(value))
+}
 
 ## Functions to perform Random Walk with Restart on Multiplex Networks.
-
 simplify.layers <- function(Input_Layer){
-    
     ## Undirected Graphs
     Layer <- as.undirected(Input_Layer, mode = c("collapse"),
         edge.attr.comb = igraph_opt("edge.attr.comb"))
@@ -43,10 +44,9 @@ simplify.layers <- function(Input_Layer){
         E(Layer)$weight <- rep(1, ecount(Layer))
     }
     
-    ## Simple Graphs
     Layer <- 
         igraph::simplify(Layer,remove.multiple = TRUE,remove.loops = TRUE, 
-            edge.attr.comb=mean)
+            edge.attr.comb=col.means.helper)
     
     return(Layer)
 }
