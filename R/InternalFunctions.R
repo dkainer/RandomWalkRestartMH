@@ -43,7 +43,8 @@ simplify.layers <- function(Input_Layer){
     } else {
         E(Layer)$weight <- rep(1, ecount(Layer))
     }
-    
+
+    ## Simple Graphs
     Layer <- 
         igraph::simplify(Layer,remove.multiple = TRUE,remove.loops = TRUE, 
             edge.attr.comb=col.means.helper)
