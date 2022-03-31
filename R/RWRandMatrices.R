@@ -344,7 +344,7 @@ Random.Walk.Restart.Multiplex.default <- function(x, MultiplexObject, Seeds,
     Score = numeric(length = N)
         
     rank_global <- data.frame(NodeNames = NodeNames, Score = Score)
-    rank_global$NodeNames <- gsub("_1", "", row.names(prox_vector)[seq_len(N)])
+    rank_global$NodeNames <- gsub("_1$", "", row.names(prox_vector)[seq_len(N)])
         
     if (MeanType=="Geometric"){
         rank_global$Score <- geometric.mean(as.vector(prox_vector[,1]),L,N)    
@@ -760,8 +760,8 @@ Random.Walk.Restart.MultiplexHet.default <- function(x, MultiplexHet_Object,
     prox_vector_1 <- prox_vector[1:IndexSep,]
     prox_vector_2 <- prox_vector[(IndexSep+1):nrow(prox_vector),]
         
-    NodeNames1 <- gsub("_1", "",names(prox_vector_1)[seq_len(NumberNodes1)])
-    NodeNames2 <- gsub("_1", "",names(prox_vector_2)[seq_len(NumberNodes2)])
+    NodeNames1 <- gsub("_1$", "",names(prox_vector_1)[seq_len(NumberNodes1)])
+    NodeNames2 <- gsub("_1$", "",names(prox_vector_2)[seq_len(NumberNodes2)])
         
     if (MeanType=="Geometric"){
         rank_global1 <- geometric.mean(prox_vector_1,NumberLayers1,NumberNodes1)    
