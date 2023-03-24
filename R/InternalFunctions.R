@@ -45,9 +45,9 @@ simplify.layers <- function(Input_Layer){
     
     ## Simple Graphs
     Layer <- 
-        igraph::simplify(Layer,remove.multiple = TRUE,remove.loops = TRUE, 
-            edge.attr.comb=mean)
-    
+        igraph::simplify(g1,remove.multiple = TRUE,remove.loops = TRUE, 
+            edge.attr.comb=list(weight=mean, type="first"))
+
     return(Layer)
 }
 
