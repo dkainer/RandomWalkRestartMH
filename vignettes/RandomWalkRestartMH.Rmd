@@ -185,9 +185,9 @@ of all the potential candidates. The results are presented in Figure 1
 
 ```{r Monoplex 4}
 ## In this case we selected to induce a network with the Top 15 genes.
-TopResults_PPI <-
-    create.multiplexNetwork.topResults(RWR_PPI_Results,PPI_MultiplexObject,
-        k=15)
+# TopResults_PPI <-
+#     create.multiplexNetwork.topResults(RWR_PPI_Results,PPI_MultiplexObject,
+#         k=15)
 ```
 
 ```{r Figure1, fig.width=10, fig.height=5, dpi=300, echo = TRUE, fig.cap="Figure 1: RWR on a monoplex PPI Network. Network representation of the top 15 ranked genes when the RWR algorithm is executed using the PIK3R1 gene as seed (yellow node). Blue edges represent PPI interactions."}
@@ -347,9 +347,9 @@ top scored genes. The results are presented in Figure 3.
 
 ```{r Multiplex4}
 ## In this case we select to induce a multiplex network with the Top 15 genes.
-TopResults_PPI_PATH <-
-    create.multiplexNetwork.topResults(RWR_PPI_PATH_Results, PPI_PATH_Multiplex, 
-      k=15)
+# TopResults_PPI_PATH <-
+#     create.multiplexNetwork.topResults(RWR_PPI_PATH_Results, PPI_PATH_Multiplex, 
+#       k=15)
 ```
 
 ```{r Figure 3, fig.width=10, fig.height=5, dpi=300, echo = TRUE, fig.cap="Figure 3: RWR-M on a multiplex PPI-Pathway Network. Network representation of the top 15 ranked genes when the RWR-M algorithm is executed using the *PIK3R1* gene (yellownode). Blue curved edges are PPI interactions and red straight edges are Pathways links. All the interactions are aggregated into a monoplex network only for visualization purposes."}

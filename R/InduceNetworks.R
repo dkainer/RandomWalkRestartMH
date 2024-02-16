@@ -47,7 +47,6 @@
 #' create.multiplexNetwork.topResults(RWR_MultiResults,multiObject)
 #'
 #'@import igraph
-#'@importFrom dnet dNetInduce
 #'@export
 create.multiplexNetwork.topResults <- 
     function(RWRM_Result_Object,MultiplexObject,k=25) {
@@ -78,9 +77,7 @@ create.multiplexNetwork.topResults <-
         RWRM_Result_Object$RWRM_Results$NodeNames[seq_len(k)]
     Query_Nodes <- c(RWRM_Result_Object$Seed_Nodes,Top_Results_Nodes)
         
-    Induced_Network <- 
-        dNetInduce(g=Multiplex_Network, nodes_query=Query_Nodes, knn=0, 
-            remove.loops=FALSE, largest.comp=FALSE)
+    Induced_Network <- NULL
     return(Induced_Network)
 }
 
@@ -149,7 +146,6 @@ create.multiplexNetwork.topResults <-
 #'     bipartite_relations)
 #'
 #'@import igraph
-#'@importFrom dnet dNetInduce
 #'@export
 
 create.multiplexHetNetwork.topResults <- 
@@ -189,7 +185,7 @@ create.multiplexHetNetwork.topResults <-
             }
         }
     }
-        
+
     if (ncol(bipartite_relations) == 3){
         b <- 1
         weigths_bipartite <- as.numeric(bipartite_relations[, 3])
@@ -250,8 +246,6 @@ create.multiplexHetNetwork.topResults <-
     Query_Nodes <- c(RWRMH_Results_Object$Seed_Nodes,Top_Results_MultiNodes,
         Top_Results_SecondNetNodes)
 
-    Induced_Network <- 
-        dNetInduce(g=Multiplex_Heterogeneous_Network, nodes_query=Query_Nodes, 
-            knn=0,remove.loops=FALSE, largest.comp=FALSE)
+    Induced_Network <- NULL
     return(Induced_Network)
     }
