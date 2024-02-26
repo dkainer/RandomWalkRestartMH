@@ -45,6 +45,9 @@ create.multiplex <- function(...){
     UseMethod("create.multiplex")
 }
 
+#' @import foreach
+#' @import parallel
+#' @import doParallel
 #' @rdname create.multiplex
 #' @export
 create.multiplex.default <- function(LayersList,...){
@@ -62,6 +65,7 @@ create.multiplex.default <- function(LayersList,...){
         stop("Not igraph objects")
     }
     
+	start_layer_list_time <- Sys.time()
     Layer_List <- lapply(SeqLayers, function (x) {
         if (is.null(V(LayersList[[x]])$name)){
             LayersList[[x]] <- 
@@ -71,11 +75,22 @@ create.multiplex.default <- function(LayersList,...){
             LayersList[[x]]
         }
     })
+    print(paste("Layers list took: ", Sys.time() - start_layer_list_time))
     
-    ## We simplify the layers 
-    Layer_List <- 
-        lapply(SeqLayers, function(x) simplify.layers(Layer_List[[x]]))
-    
+	## We simplify the layers 
+    simplify_layers_time_start <- Sys.time()
+	# Layer_List <- 
+    #     lapply(SeqLayers, function(x) simplify.layers(Layer_List[[x]]))
+	numCores <- detectCores()
+	registerDoParallel(cores=numCores)
+	Layer_List <- foreach(x = SeqLayers) %dopar% {
+ 		 simplify.layers(Layer_List[[x]])
+	}
+	stopImplicitCluster()
+	print(paste("Simplfy layers took: ", Sys.time() - simplify_layers_time_start))
+	
+
+
     ## We set the names of the layers. 
     
     if (is.null(Layers_Name)){
@@ -90,10 +105,12 @@ create.multiplex.default <- function(LayersList,...){
             function(x) V(Layer_List[[x]])$name))))
         
     Number_of_Nodes <- length(Pool_of_Nodes)
+    add_missing_nodes_time <- Sys.time()
 
     Layer_List <-
         lapply(Layer_List, add.missing.nodes,Number_of_Layers,Pool_of_Nodes)
-    
+	print(paste("add missing nodes took: ", Sys.time() - add_missing_nodes_time))
+
     # We set the attributes of the layer
     counter <- 0 
     Layer_List <- lapply(Layer_List, function(x) { 
@@ -101,13 +118,12 @@ create.multiplex.default <- function(LayersList,...){
         set_edge_attr(x,"type",E(x), value = names(Layer_List)[counter])
     })
     
-
     MultiplexObject <- c(Layer_List,list(Pool_of_Nodes=Pool_of_Nodes,
         Number_of_Nodes_Multiplex=Number_of_Nodes, 
         Number_of_Layers=Number_of_Layers))
-        
+	
     class(MultiplexObject) <- "Multiplex"
-        
+        print("MULTIPLEX CLASS MADE")
     return(MultiplexObject)
 }
     

@@ -40,17 +40,24 @@
 #'
 #'@import igraph
 #'@import Matrix
+#'@import parallel
+#'@import doParallel
+#'@import foreach
+#'@import iterators
 #'@importFrom methods as
 #'@export
 compute.adjacency.matrix <- function(x,delta = 0.5)
 {
+	print("Base ADJ COMPUTING START")
+	start <- Sys.time()
     if (!isMultiplex(x) & !isMultiplexHet(x)) {
         stop("Not a Multiplex or Multiplex Heterogeneous object")
     }
     if (delta > 1 || delta <= 0) {
         stop("Delta should be between 0 and 1")
     }
-    
+    cl <- makeCluster(detectCores())
+
     N <- x$Number_of_Nodes_Multiplex
     L <- x$Number_of_Layers
     
@@ -60,10 +67,9 @@ compute.adjacency.matrix <- function(x,delta = 0.5)
     }
     
     Layers_Names <- names(x)[seq(L)]
-    
     ## IDEM_MATRIX.
     Idem_Matrix <- Matrix::Diagonal(N, x = 1)
-    
+ 
     counter <- 0 
     Layers_List <- lapply(x[Layers_Names],function(x){
         
@@ -81,9 +87,11 @@ compute.adjacency.matrix <- function(x,delta = 0.5)
             paste0(colnames(Adjacency_Layer),"_",counter)
         rownames(Adjacency_Layer) <- 
             paste0(rownames(Adjacency_Layer),"_",counter)
+
         Adjacency_Layer
     })
     
+	# print("Unlisting column names")
     MyColNames <- unlist(lapply(Layers_List, function (x) unlist(colnames(x))))
     MyRowNames <- unlist(lapply(Layers_List, function (x) unlist(rownames(x))))
     names(MyColNames) <- c()
@@ -92,8 +100,10 @@ compute.adjacency.matrix <- function(x,delta = 0.5)
     colnames(SupraAdjacencyMatrix) <-MyColNames
     rownames(SupraAdjacencyMatrix) <-MyRowNames
     
+	# print("Offdiag calculations")
     offdiag <- (delta/(L-1))*Idem_Matrix
     
+	# print("Positioning ini and ending rows")
     i <- seq_len(L)
     Position_ini_row <- 1 + (i-1)*N
     Position_end_row <- N + (i-1)*N
@@ -101,16 +111,72 @@ compute.adjacency.matrix <- function(x,delta = 0.5)
     Position_ini_col <- 1 + (j-1)*N
     Position_end_col <- N + (j-1)*N
     
-    for (i in seq_len(L)){
-        for (j in seq_len(L)){
-            if (j != i){
-                SupraAdjacencyMatrix[(Position_ini_row[i]:Position_end_row[i]),
-                    (Position_ini_col[j]:Position_end_col[j])] <- offdiag
-            }    
-        }
-    }
-    
+	# print(Position_ini_row)
+	# save(Position_ini_row, file='Position_ini_row.rdata')
+	# save(Position_end_row, file='Position_end_row.rdata')
+	# save(Position_ini_col, file='Position_ini_col.rdata')
+	# save(Position_end_col, file='Position_end_col.rdata')
+
+	# print("supra-adjacency making")
+	supra_start = Sys.time()
+    # for (i in seq_len(L)){
+	# 	start_i <- Sys.time()
+    #     for (j in seq_len(L)){
+	# 		start_j <- Sys.time()
+    #         if (j != i){
+    #             SupraAdjacencyMatrix[(Position_ini_row[i]:Position_end_row[i]),
+    #                 (Position_ini_col[j]:Position_end_col[j])] <- offdiag
+    #         }    
+	# 		print(paste("         ", i, j, " took ", Sys.time() - start_j))
+    #     }
+	# 	print(paste(i, "took ", Sys.time() - start_i))
+    # }
+	combinations <- expand.grid(seq_len(L), seq_len(L))
+	filtered_combinations <- subset(combinations, Var1 != Var2)
+ 	
+	modified_matrices <- foreach(column = seq_len(L), .combine = 'cbind') %dopar% {
+		# get rows that match the 
+		column_mask_for_rows <- filtered_combinations$Var2 == column
+		matching_rows <- filtered_combinations[column_mask_for_rows, ] 
+
+		matching_layers <- matching_rows$Var1
+		col_ini =  Position_ini_col[column]
+		col_end =  Position_end_col[column]
+
+		modified_matrix <- SupraAdjacencyMatrix[, col_ini:col_end]
+
+
+		col_vector <- c()
+		row_vector <- c()
+		for (sub_layer in matching_layers){
+			# print(sub_layer)
+			row_ini = Position_ini_row[sub_layer]
+			row_end = Position_end_row[sub_layer]
+			row_vector <- c(row_vector, row_ini:row_end)
+			col_vector <- c(col_vector, col_ini:col_end)
+		}
+		# print("extracting submatrix")
+
+		# print('updating indices')
+		# print(col_vector[1:10])
+		col_vector <- col_vector - (col_ini -1) 
+		# print("updated: ")
+		# print(col_vector[1:10])
+		# print("modifiying matrix")
+		modified_vectors <- cbind(row_vector, col_vector)
+		modified_matrix[modified_vectors] <- unique(offdiag[offdiag>0]) # this is scalar... ought to be 1U
+		# print(dim(modified_matrix))
+		return(modified_matrix)
+
+	}
+	SupraAdjacencyMatrix = modified_matrices
+
+	save(SupraAdjacencyMatrix, file='supramat_new_method_newest.Rdata')
+	print(paste("Total supra time = ", Sys.time() - supra_start))
+    stopCluster(cl)
+	print("Making dgcMatrix")
     SupraAdjacencyMatrix <- as(SupraAdjacencyMatrix, "dgCMatrix")
+	print("done making matrix")
     return(SupraAdjacencyMatrix)
 }
 
