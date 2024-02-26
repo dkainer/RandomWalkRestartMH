@@ -12,7 +12,7 @@
 #' \code{create.multiplexNetwork.topResults} is a function to create a network
 #' from the top results of the Random Walk with Restart on Multiplex networks
 #' algorithm (a \code{RWRM_Results} object).
-#'
+#' 
 #' @usage create.multiplexNetwork.topResults(RWRM_Result_Object,
 #'     MultiplexObject,k=25)
 #'

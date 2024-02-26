@@ -21,11 +21,14 @@ BugReports: https://github.com/dkainer/RandomWalkRestartMH/issues
 Encoding: UTF-8
 LazyData: true
 Depends: R(>= 3.5.0)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Imports: 
     igraph, 
     Matrix, 
-    methods
+    methods,
+    parallel,
+	doParallel,
+	foreach
 biocViews: 
     GenePrediction, 
     NetworkInference, 
