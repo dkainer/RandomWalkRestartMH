@@ -4,18 +4,6 @@
 ## Functions for internal use
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
 
-## Geometric mean: R computation.
-
-geometric.mean <- function(Scores, L, N) {
-    
-    FinalScore <- numeric(length = N)
-    
-    for (i in seq_len(N)){
-        FinalScore[i] <- prod(Scores[seq(from = i, to = N*L, by=N)])^(1/L)
-    }
-    
-    return(FinalScore)
-}
 
 
 ## Functions to perform Random Walk with Restart on Multiplex Networks.
@@ -311,7 +299,8 @@ geometric.mean <- function(Scores, L, N) {
     FinalScore <- numeric(length = N)
     
     for (i in seq_len(N)){
-        FinalScore[i] <- prod(Scores[seq(from = i, to = N*L, by=N)])^(1/L)
+        score_values <- Scores[seq(from = i, to = N*L, by=N)]
+        FinalScore[i] <- psych::geometric.mean(score_values)
     }
     
     return(FinalScore)

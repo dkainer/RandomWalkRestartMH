@@ -23,12 +23,13 @@ LazyData: true
 Depends: R(>= 3.5.0)
 RoxygenNote: 7.2.3
 Imports: 
-    igraph, 
-    Matrix, 
+    igraph,
+    Matrix,
     methods,
     parallel,
-	doParallel,
-	foreach
+    doParallel,
+    foreach,
+    psych
 biocViews: 
     GenePrediction, 
     NetworkInference, 
@@ -41,7 +42,8 @@ biocViews:
     BioCarta, 
     KEGG, 
     Reactome, 
-    Network
+    Network,
+    psych
 Suggests: 
     BiocStyle,
     knitr,
